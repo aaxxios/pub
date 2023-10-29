@@ -1,0 +1,3 @@
+token = "6445317545:AAHAUsFDbQFomPe5fN-UelFeWMGEe6AvEpY"
+permittedusers = [5733045846, 1264124014]
+database = "Host=127.0.0.1;Port=8770;Database=pub;Trust Server Certificate=true;"
