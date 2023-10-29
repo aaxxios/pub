@@ -6,6 +6,7 @@ public class Configuration
 {
     public  List<long> permittedusers { get; set; }
     public  string token { get; set; }
+    public string database { get; set; }
 
     public static Configuration Instance { get; set; }
     public static Configuration? FromConfig()

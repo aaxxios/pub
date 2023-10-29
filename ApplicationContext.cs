@@ -76,6 +76,8 @@ public class Post
 
     public InlineKeyboardMarkup Markup { get; set; }
 
+    public string RawMarkup { get; set; }
+
     public int PostInterval { get; set; }
 
     public DateTime NextPost { get; set; }

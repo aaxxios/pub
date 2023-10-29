@@ -3,7 +3,8 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types;
 using Telegram.Bot;
-using PublisherBot.Configuration;
+using PublisherBot.Data;
+
 namespace PublisherBot.Handler;
 
 
@@ -22,11 +23,20 @@ internal class StartHanlder : IMessageUpdateHandler, IResumableHandler
     {
         if (update.Message is Message msg && msg.Text is string)
         {
+            //using(var context = new ApplicationDbContext())
+            //{
+            //    var user = context.TelegramUsers.FirstOrDefault(u => u.Id == msg.From!.Id);
+            //    if (user != null)
+            //    {
+            //        Console.WriteLine("User not found");
+            //    }
+            //}
             var buttons = new List<InlineKeyboardButton>()
             {
                 InlineKeyboardButton.WithCallbackData("New Post", "newpost"),
-                InlineKeyboardButton.WithCallbackData("Settings", "settings")
+                //InlineKeyboardButton.WithCallbackData("Settings", "settings")
             };
+            
             var replyMarkup = new InlineKeyboardMarkup(buttons);
             var userID = msg.From!.Id;
             ApplicationContext.SetState(userID, UserState.StartMenu);
@@ -42,7 +52,7 @@ internal class StartHanlder : IMessageUpdateHandler, IResumableHandler
         var buttons = new List<InlineKeyboardButton>()
             {
                 InlineKeyboardButton.WithCallbackData("New Post", "newpost"),
-                InlineKeyboardButton.WithCallbackData("Settings", "settings")
+                //InlineKeyboardButton.WithCallbackData("Settings", "settings")
             };
         var replyMarkup = new InlineKeyboardMarkup(buttons);
         var userID = query.From!.Id;
@@ -134,7 +144,6 @@ internal class PostMediaHandler : IMessageUpdateHandler
             {
                 BotIsMember = true,
                 ChatIsCreated = true,
-                ChatIsChannel = true,
                 BotAdministratorRights = new ChatAdministratorRights()
                 {
                     CanChangeInfo = false,
@@ -218,9 +227,11 @@ public class PostButtonHandler : IMessageUpdateHandler
     {
         var userId = update.Message!.From!.Id;
         var text = GetMatch(update.Message!.Text!);
+
         var data = text.Split("##");
         var replyMarkup = new InlineKeyboardMarkup(new InlineKeyboardButton(data[0]) { Url = data[1].Trim() });
         ApplicationContext.Data[userId].Markup = replyMarkup;
+        ApplicationContext.Data[userId].RawMarkup = update.Message.Text!.Trim();
         ApplicationContext.SetState(userId, UserState.Duration);
         await client.SendTextMessageAsync(userId, "Send the duration to publish the post in minutes", replyMarkup: Preferences.CancelMarkup);
     }
@@ -257,6 +268,7 @@ public class PostDurationHandler : IMessageUpdateHandler
         {
             var data = ApplicationContext.Data[userId];
             data.PostInterval = duration;
+            
             InputFileId file = new(data.Media);
             switch (data.MediaType)
             {
@@ -280,6 +292,18 @@ public class PostDurationHandler : IMessageUpdateHandler
                     }
             }
             data.NextPost = DateTime.UtcNow + TimeSpan.FromMinutes(duration);
+            var post = new PublisherBot.Models.Post()
+            {
+                PostInterval = duration,
+                Chat = data.Chat,
+                Media = data.Media,
+                MediaType = data.MediaType,
+                PostText = data.PostText, NextPost = data.NextPost, Markup = data.RawMarkup
+            };
+
+           
+            await DatabaseProvider.Instance.AddAsync(post);
+            await DatabaseProvider.Instance.SaveChangesAsync();
             ApplicationContext.Posts.Add(data);
             await client.SendTextMessageAsync(
                 userId, "The post has been published");

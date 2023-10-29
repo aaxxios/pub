@@ -5,6 +5,7 @@ using PublisherBot.Handler;
 using Microsoft.Extensions.Logging;
 using PublisherBot;
 using System.Reflection;
+using PublisherBot.Data;
 
 var configuration = Configuration.FromConfig();
 if(configuration == null)
@@ -12,6 +13,8 @@ if(configuration == null)
     Console.WriteLine("Error reading configuration");
     Environment.Exit(0);
 }
+
+
 
 ILoggerFactory factory = new LoggerFactory();
 var logger = factory.CreateLogger<ConversationHandler>();
@@ -92,4 +95,12 @@ Console.CancelKeyPress += (sender, e) =>
 
 Scheduler.Start(bot);
 
-while (!terminate);
+var foo = Enum.Parse<Testing>("0");
+Console.WriteLine(foo.ToString());
+Enum.Parse<Testing>(foo.ToString());
+while (!terminate) ;
+
+enum Testing
+{
+    Foo, Bar
+}
