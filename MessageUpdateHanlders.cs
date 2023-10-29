@@ -143,7 +143,7 @@ internal class PostMediaHandler : IMessageUpdateHandler
             RequestChat = new KeyboardButtonRequestChat()
             {
                 BotIsMember = true,
-                ChatIsCreated = true,
+                ChatIsCreated = true, ChatIsChannel = true,
                 BotAdministratorRights = new ChatAdministratorRights()
                 {
                     CanChangeInfo = false,
