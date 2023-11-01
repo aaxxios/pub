@@ -74,7 +74,7 @@ internal class Scheduler
                     await context.SaveChangesAsync();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Error scheduling post: {0}", ex.Message);
             }
@@ -96,3 +96,5 @@ internal class Scheduler
         }
     }
 }
+
+

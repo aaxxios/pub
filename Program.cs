@@ -8,7 +8,7 @@ using System.Reflection;
 using PublisherBot.Data;
 
 var configuration = Configuration.FromConfig();
-if(configuration == null)
+if (configuration == null)
 {
     Console.WriteLine("Error reading configuration");
     Environment.Exit(0);
@@ -43,27 +43,27 @@ void DiscoverHandlers()
 {
     var assembly = Assembly.GetEntryAssembly();
     var info = assembly!.GetTypes();
-    foreach(var type in info)
+    foreach (var type in info)
     {
         if (type.IsClass)
         {
             var attrs = type.GetCustomAttribute<UpdateHandlerAttribute>();
             if (attrs != null)
             {
-                if(type.GetInterface(nameof(IMessageUpdateHandler)) != null)
+                if (type.GetInterface(nameof(IMessageUpdateHandler)) != null)
                 {
                     var handler = assembly.CreateInstance(type.FullName!) as IMessageUpdateHandler;
                     if (handler != null)
                     {
                         ConversationHandler.AddHanlder(new MessageHanlder(handler));
                     }
-                    
+
                 }
 
                 else if (type.GetInterface(nameof(ICallbackQueryUpdateHandler)) != null)
                 {
                     var handler = assembly.CreateInstance(type.FullName!) as ICallbackQueryUpdateHandler;
-                    if(handler != null)
+                    if (handler != null)
                     {
                         ConversationHandler.AddHanlder(new CallbackQueryHandler(handler));
                     }
@@ -79,11 +79,11 @@ bot.StartReceiving(
     updateHandler: async (client, update, cancellationToken) =>
     {
         await ConversationHandler.Handle(client, update);
-    }, 
-    pollingErrorHandler:  (client, exception, cancellationToken) =>
+    },
+    pollingErrorHandler: (client, exception, cancellationToken) =>
     {
 
-    }, 
+    },
     receiverOptions: receiverOptions
     );
 
@@ -104,3 +104,4 @@ enum Testing
 {
     Foo, Bar
 }
+
