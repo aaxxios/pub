@@ -12,7 +12,7 @@ internal class Scheduler
     public static System.Timers.Timer timer;
     private static ITelegramBotClient botClient;
     private static ApplicationDbContext context;
-
+    private static bool running = false;
     public static void Start(ITelegramBotClient client)
     {
         botClient = client;
@@ -27,10 +27,16 @@ internal class Scheduler
 
     public static void ElapsedHandler(object? sender, ElapsedEventArgs e)
     {
+        if(running)
+        {
+            return;
+        }
+        running = true;
         Task.Run(async () =>
         {
             await publish();
-        });
+        }).Wait();
+        running = false;
     }
 
     private static async Task publish()
