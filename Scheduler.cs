@@ -70,6 +70,8 @@ internal class Scheduler
                             }
                     }
                     data.NextPost = DateTime.UtcNow + TimeSpan.FromMinutes(data.PostInterval);
+                    context.Update(data);
+                    await context.SaveChangesAsync();
                 }
             }
             catch(Exception ex)

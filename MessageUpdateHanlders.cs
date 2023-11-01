@@ -301,13 +301,13 @@ public class PostDurationHandler : IMessageUpdateHandler
                 PostText = data.PostText, NextPost = data.NextPost, Markup = data.RawMarkup
             };
 
-           
-            await DatabaseProvider.Instance.AddAsync(post);
-            await DatabaseProvider.Instance.SaveChangesAsync();
-            ApplicationContext.Posts.Add(data);
+            ApplicationDbContext context = new ApplicationDbContext();
+            await context.AddAsync(post);
+            await context.SaveChangesAsync();
             await client.SendTextMessageAsync(
                 userId, "The post has been published");
             ApplicationContext.SetState(userId, UserState.Unknown);
+
         }
 
     }

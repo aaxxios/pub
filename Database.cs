@@ -1,14 +1,11 @@
 ﻿using PublisherBot.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace PublisherBot
 {
     internal class DatabaseProvider
     {
+#pragma warning disable CS8618
         private static ApplicationDbContext _context;
         private static object mutext = new object();
         public static ApplicationDbContext Instance

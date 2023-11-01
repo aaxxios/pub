@@ -16,8 +16,8 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<MyUser>().ToTable("TelegramUsers");
-        modelBuilder.Entity<Transaction>().ToTable("Transactions");
+        //modelBuilder.Entity<MyUser>().ToTable("TelegramUsers");
+        //modelBuilder.Entity<Transaction>().ToTable("Transactions");
     }
 
 }
